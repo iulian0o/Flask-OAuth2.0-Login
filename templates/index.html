@@ -1,21 +1,47 @@
-{% extends 'base.html' %} {% block body %}
+{% extends 'base.html' %}
+{% block body %}
 
-<div class="containe">
+<div class="container">
   <h1>Welcome</h1>
-  <form id="auth-form" action="{{url_for('login')}}" method="post">
-    <input 
-      type="text" 
-      name="username" 
-      placeholder="username" 
+
+  <form id="auth-form" method="post">
+    <input
+      type="text"
+      name="username"
+      placeholder="username"
+      required
     />
-    <input 
-      type="text" 
-      name="password" 
-      placeholder="password" 
+
+    <input
+      type="password"
+      name="password"
+      placeholder="password"
+      required
     />
-    <input type="submit" value="Login" class="btn btn-login"/>
-    <input type="button" value="Register" class="btn btn-login"/>
+
+    <button type="button" onclick="setActionForm('login')">
+      Login
+    </button>
+
+    <button type="button" onclick="setActionForm('register')">
+      Register
+    </button>
   </form>
 </div>
+
+<script>
+  function setActionForm(action) {
+    const form = document.getElementById("auth-form");
+
+    if (action === "login") {
+      form.action = "{{ url_for('login') }}";
+    } else if (action === "register") {
+      form.action = "{{ url_for('register') }}";
+    }
+
+    form.method = "post";
+    form.submit();
+  }
+</script>
 
 {% endblock %}

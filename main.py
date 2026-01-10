@@ -27,7 +27,7 @@ class User(db.Model):
 @app.route("/")
 def home():
     if "username" in session:
-        return redirect(url_for('dashboard.html'))
+        return redirect(url_for('dashboard'))
     return render_template('index.html')
 
 # Login
@@ -44,6 +44,40 @@ def login():
 
     else:
         return render_template("index.html")
+    
+# Register
+@app.route("/register", methods=["POST"])
+def register():
+    username = request.form['username']
+    password = request.form['password']
+
+    user = User.query.filter_by(username=username).first()
+    if user:
+        return render_template("index.html", error="User already exists!")
+
+    new_user = User(username=username)
+    new_user.set_password(password)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    session['username'] = username
+    return redirect(url_for('dashboard'))
+
+    
+# Dashboard
+@app.route("/dashboard")
+def dashboard():
+    if "username" in session:
+        return render_template("dashboard.html", username=session['username'])
+    return redirect(url_for('home'))
+
+# Logout
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('home'))
+
 
 if __name__ == '__main__':
     with app.app_context():
