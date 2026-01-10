@@ -108,5 +108,14 @@ header {
                 background-color: $primary-hover-color;
             }
         }
+
+        &.login-google {
+            background-color: coral;
+            color: #fff;
+
+            &:hover {
+                background-color: rgb(222, 107, 65);
+            }
+        }
     }
 }
