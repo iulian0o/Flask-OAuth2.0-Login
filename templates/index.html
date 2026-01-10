@@ -9,6 +9,7 @@
       type="text"
       name="username"
       placeholder="username"
+      class="input-field"
       required
     />
 
@@ -16,16 +17,12 @@
       type="password"
       name="password"
       placeholder="password"
+      class="input-field"
       required
     />
 
-    <button type="button" onclick="setActionForm('login')">
-      Login
-    </button>
-
-    <button type="button" onclick="setActionForm('register')">
-      Register
-    </button>
+    <input type="button" value="Login" class="btn btn-login" onclick="setActionForm('login')">
+    <input type="button" value="Register" class="btn btn-register" onclick="setActionForm('register')">
   </form>
 </div>
 
