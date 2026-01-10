@@ -1,0 +1,2 @@
+CLIENT_ID = "1095645506566-1s010q3rqdc770n406n8bqo60hu8s1vk.apps.googleusercontent.com"
+CLIENT_SECRET = "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"
