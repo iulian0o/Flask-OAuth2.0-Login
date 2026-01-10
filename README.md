@@ -1,21 +1,3 @@
-📂 Project Structure
-Flask-Login-System/
-│
-├── main.py
-├── user.db
-│
-├── templates/
-│   ├── base.html
-│   ├── index.html
-│   └── dashboard.html
-│
-├── static/
-│   ├── style.css
-│   └── script.js
-│
-└── README.md
-
-
 🔐 Flask Authentication System
 
 A simple Flask-based authentication system featuring user registration, login, logout, and session-based access control.
