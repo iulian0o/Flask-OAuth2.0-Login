@@ -17,17 +17,20 @@ oauth = OAuth(app)
 google = oauth.register(
     name='google',
     client_id=CLIENT_ID,
-    client_secret = CLIENT_SECRET,
-    server_metadata_uri = 'https://accounts.google.com/.well-known/openid-configuration' ,
-    client_kwargs={'scope' : 'openid profile email'}
+    client_secret=CLIENT_SECRET,
+    access_token_url='https://oauth2.googleapis.com/token',
+    authorize_url='https://accounts.google.com/o/oauth2/v2/auth',
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    client_kwargs={'scope': 'openid email profile'}
 )
+
 
 #  Database Model
 class User(db.Model):
     #  Class Variables
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), unique=True, nullable=False)
-    password_hash = db.Column(db.String(150), nullable=False)
+    password_hash = db.Column(db.String(150), nullable=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -90,23 +93,20 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('home'))
 
-# Login for Google
-@app.route('/login/google')
+# Google OAuth login
+@app.route("/login/google")
 def login_google():
-    try:
-        redirect_uri = url_for('authorize', external=True)
-        return google.authorize_redirect(redirect_uri)
-    except Exception as e:
-        app.logger.error(f"Error during login:{str(e)}")
-        return "Error occured during login", 500
-    
+    # Hardcode the redirect URI to exactly match what you registered in Google Cloud
+    redirect_uri = "http://localhost:5000/authorize/google"
+    return google.authorize_redirect(redirect_uri)
+
+
 @app.route("/authorize/google")
 def authorize_google():
-    token = google.authorize_acces_token()
-    userinfo_endpoint = google.server_metadata['userinfo_endpoint']
-    resp = google.get(userinfo_endpoint)
+    token = google.authorize_access_token()
+    resp = google.get("userinfo", token=token)
     user_info = resp.json()
-    username = user_info['email']
+    username = user_info["email"]
 
     user = User.query.filter_by(username=username).first()
     if not user:
@@ -114,12 +114,11 @@ def authorize_google():
         db.session.add(user)
         db.session.commit()
 
-    session['username'] = username
-    session['oauth_token'] = token
+    session["username"] = username
+    session["oauth_token"] = token
 
-    return redirect(url_for('dashboard'))
+    return redirect(url_for("dashboard"))
 
-# Authorize for Google
 
 
 if __name__ == '__main__':
